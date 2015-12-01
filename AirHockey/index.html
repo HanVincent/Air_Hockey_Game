@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,user-scalable=no,initial-scale=1">
+    <link rel="icon" type="image/png" href="icons/icon-128.png">
+    <title>Air Hockey</title>
+</head>
+<body data-theme="b" data-content-theme="b">
+    <div id="index" class="ui-page-theme-b" data-role="page">
+        <h1>Air Hockey</h1>
+        <h2>韓文彬</h2>
+        <div id="#" class="ui-grid-b" data-role="footer navbar">
+            <div class="ui-block-a">
+                <a id="start" href="#game" class="ui-btn ui-corner-all">start</a>
+            </div>
+            <div class="ui-block-b">
+                <a href="#" id="setting" class="ui-btn ui-corner-all" data-rel="dialog">setting</a>
+            </div>
+            <div class="ui-block-b">
+                <a href="#" id="about" class="ui-btn ui-corner-all" data-rel="dialog">about</a>
+            </div>
+        </div>
+    </div>
+
+    <div id="game" class="ui-page-theme-b" data-role="page">
+        <canvas id="canvas"></canvas>
+    </div>
+
+</body>
+<footer>
+    <link rel="stylesheet" href="css/app.css" />
+    <link rel="stylesheet" href="css/jquery.mobile.icons.min.css" />
+    <link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" />
+    <script src="js/jquery-1.11.1.min.js"></script>
+    <script src="js/jquery.mobile-1.4.5.min.js"></script>
+    <script src="js/hammer.min.js"></script>
+    <script src="js/rule.js" defer></script>
+    <script src="js/app.js" defer></script>
+</footer>
+</html>
