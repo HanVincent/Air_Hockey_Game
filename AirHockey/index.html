@@ -12,19 +12,64 @@
         <h2>韓文彬</h2>
         <div id="#" class="ui-grid-b" data-role="footer navbar">
             <div class="ui-block-a">
-                <a id="start" href="#game" class="ui-btn ui-corner-all">start</a>
+                <a href="#game" id="start" class="ui-btn ui-corner-all">start</a>
             </div>
             <div class="ui-block-b">
-                <a href="#" id="setting" class="ui-btn ui-corner-all" data-rel="dialog">setting</a>
+                <a href="#setting" id="setbtn" class="ui-btn ui-corner-all">setting</a>
             </div>
             <div class="ui-block-b">
-                <a href="#" id="about" class="ui-btn ui-corner-all" data-rel="dialog">about</a>
+                <a href="#" id="aboutbtn" class="ui-btn ui-corner-all" data-rel="dialog">about</a>
             </div>
         </div>
     </div>
 
     <div id="game" class="ui-page-theme-b" data-role="page">
         <canvas id="canvas"></canvas>
+    </div>
+
+    <div id="setting" class="ui-page-theme-b" data-role="page">
+        <div data-role="header"><h1>Setting</h1></div>
+        <div data-role="content">
+            <div data-role="fieldcontain">
+                <div data-role="controlgroup" data-type="horizontal" data-mini="true">
+                    <legend>Player:</legend>
+                    <input type="radio" name="player" id="1P" value="1" checked="checked" />
+                    <label for="1P">1P</label>
+                    <input type="radio" name="player" id="2P" value="2" />
+                    <label for="2P">2P</label>
+                </div>
+            </div>
+            <div data-role="fieldcontain">
+                <div data-role="controlgroup" data-type="horizontal" data-mini="true">
+                    <legend>Level:</legend>
+                    <input type="radio" name="level" id="easy" value="5" checked="checked" />
+                    <label for="easy">easy</label>
+                    <input type="radio" name="level" id="medium" value="10"/>
+                    <label for="medium">medium</label>
+                    <input type="radio" name="level" id="difficult" value="15"/>
+                    <label for="difficult">difficult</label>
+                </div>
+            </div>
+            <div data-role="fieldcontain">
+                <div data-role="controlgroup" data-type="horizontal" data-mini="true">
+                    <legend>Friction:</legend>
+                    <input type="radio" name="friction" id="no" value="1" />
+                    <label for="no">no</label>
+                    <input type="radio" name="friction" id="common" value="0.995" checked="checked"/>
+                    <label for="common">common</label>
+                    <input type="radio" name="friction" id="high" value="0.9"/>
+                    <label for="high">high</label>
+                </div>
+            </div>
+            <div data-role="fieldcontain">
+                <label for="music">Music:</label>
+                <select name="music" id="music" data-role="slider" data-theme="b">
+                    <option value="no">No</option>
+                    <option value="yes">Yes</option>
+                </select>
+            </div>
+            <a href="#" data-rel="back" data-role="button">OK!</a>
+        </div>
     </div>
 
 </body>

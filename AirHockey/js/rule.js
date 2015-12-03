@@ -1,9 +1,11 @@
 'use strict';
 (function(exports){
+    var model = 0;
     var width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
     var height = (window.innerHeight > 0) ? window.innerHeight : screen.height;
     var goalStart = width * 0.3;
     var goalEnd = width * 0.7;
+    var ComLevel = 0;
     var ball = {
         x: width / 2,
         y: height / 2,
@@ -11,42 +13,97 @@
         dx: 0,
         dy: 0,
         s: 10,
-        f: 0.995
+        f: 0
     };
     var bumper = function (h) {
         this.x = width / 2;
-        this.y = height * h;
+        this.y = height / h;
         this.r = width * 0.05;
+        this.dx = 0;
+        this.dy = 0;
         this.score = 0;
         this.bounce = function() {
             if ((ball.x - this.x)*(ball.x - this.x) + (ball.y - this.y)*(ball.y - this.y)
                 <= (ball.r + this.r)*(ball.r + this.r)){
-                ball.dx = (ball.x - this.x) / (ball.r + this.r) * ball.s;
-                ball.dy = (ball.y - this.y) / (ball.r + this.r) * ball.s;
+                ball.dx = (ball.x - this.x) / (ball.r + this.r) * ball.s;//this.dx*10;
+                ball.dy = (ball.y - this.y) / (ball.r + this.r) * ball.s;//this.dy*10;
             }
         };
     };
-    var player1 = new bumper(0.66);
-    var player2 = new bumper(0.33);
+    var player1 = new bumper(4/3);
+    var player2 = new bumper(4);
 
     var rule = function () {
-
+        model = $("[name=player]:checked").val();
+        ball.f = $("[name=friction]:checked").val();
+        ComLevel = $("[name=level]:checked").val();
+        if (model === "1")
+            console.log("1");
+        if(model !== 1)
+            console.log("2");
+        if(model ===2)
+            console.log("3");
     };
 
     rule.prototype.start = function() {
-        this.interval = setInterval(this.drawArea.bind(this), 1);
+        this.interval = setInterval(this.drawArea.bind(this), 3);
     };
 
     rule.prototype.movePlayer = function(e) {
-        if(e.center.y > height/2){
-            player1.x = e.center.x;
-            player1.y = e.center.y;
+        if(model === "1"){//1P
+            var touch = e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
+            if(touch.pageY > height/2){
+                player1.x = touch.pageX;
+                player1.y = touch.pageY;
+            }
+        } else {//2P
+            for(var i = 0; i < e.originalEvent.touches.length; i++){
+                var touch = e.originalEvent.touches[i] || e.originalEvent.changedTouches[i];
+                if(touch.pageY > height/2){
+                    player1.x = touch.pageX;
+                    player1.y = touch.pageY;
+                } else {
+                    player2.x = touch.pageX;
+                    player2.y = touch.pageY;
+                }
+            }
         }
-        if(e.center.y < height/2){
-            player2.x = e.center.x;
-            player2.y = e.center.y;
+    };
+
+    rule.prototype.comMove = function () {
+        //接球
+        if(Math.abs(ball.dx) + Math.abs(ball.dy) < 10 && ball.y < height / 2){
+            if(ball.y > player2.y)
+                player2.y += 4;
+            else
+                player2.y -= 4;
+        } else if (player2.y > height / 4){
+            player2.y -= 4;
+        } else if (player2.y < height / 4) {
+            player2.y += 4;
         }
 
+        //嚴禁超線
+        if(player2.y > height / 2)
+            player2.y = height / 2;
+        else if(player2.y < 0)
+            player2.y = 0;
+        if(player2.x < 0)
+            player2.x = 0;
+        else if(player2.x > width)
+            player2.x = width;
+
+        player2.dx = 6;
+        //If the ball is behind Com, it moves out of the way.
+        //不知道幹嘛
+        if(ball.y < player2.y && ball.x > player2.x - 30 && ball.x < player2.x + 30)
+            player2.dx = -6;
+
+        //Com移動，ComLevel決定難度
+        if(player2.x < ball.x + ComLevel)
+            player2.x += player2.dx;
+        if(player2.x > ball.x - ComLevel)
+            player2.x -= player2.dx;
     };
 
     rule.prototype.border = function() {
@@ -58,7 +115,7 @@
             if(ball.x - ball.r < goalStart || ball.x + ball.r > goalEnd){
                 ball.y = ball.y + ball.r >= height? height - ball.r : 0 + ball.r;
                 ball.dy *= -1;
-            } else if (ball.x - ball.r >= goalStart && ball.x + ball.r <= goalEnd){
+            } else if (ball.x >= goalStart && ball.x <= goalEnd){
                 ball.dx *= -1;
                 this.isGet();
             }
@@ -121,17 +178,19 @@
         //score
         ctx.font = "30px Arial";
         ctx.fillStyle="#f00";
-        ctx.fillText(player1.score, 0, 30);
-        ctx.fillText(player2.score, 0, height);
+        ctx.fillText(player1.score, 0, height);
+        ctx.fillText(player2.score, 0, 30);
 
-
+        //move ball
         ball.dx *= ball.f;
         ball.dy *= ball.f;
         ball.x += ball.dx;
         ball.y += ball.dy;
 
-        this.border();
+        if(model === "1")//1P
+            this.comMove();
 
+        this.border();
         player1.bounce();//bounce當球和punk接觸時才會觸發
         player2.bounce();
     };

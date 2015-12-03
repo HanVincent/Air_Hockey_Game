@@ -1,13 +1,10 @@
 /*Create rule object*/
-var rule = new rule();
+var rule;
 $('#start').click(function() {
+    rule = new rule();
     rule.start();
-
-    //use Hammer.js
-    var hammer = new Hammer(document.getElementById('canvas'));
-    hammer.get('pan').set({ pointers: 0 });
-
-    hammer.on("tap panstart panmove", function(e){
+    $("#canvas").bind("touchmove", function(e){
+        e.preventDefault();
         rule.movePlayer(e);
     });
 });
