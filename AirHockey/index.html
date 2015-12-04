@@ -9,16 +9,15 @@
 <body data-theme="b" data-content-theme="b">
     <div id="index" class="ui-page-theme-b" data-role="page">
         <h1>Air Hockey</h1>
-        <h2>韓文彬</h2>
         <div id="#" class="ui-grid-b" data-role="footer navbar">
             <div class="ui-block-a">
                 <a href="#game" id="start" class="ui-btn ui-corner-all">start</a>
             </div>
             <div class="ui-block-b">
-                <a href="#setting" id="setbtn" class="ui-btn ui-corner-all">setting</a>
+                <a href="#setting" class="ui-btn ui-corner-all">setting</a>
             </div>
             <div class="ui-block-b">
-                <a href="#" id="aboutbtn" class="ui-btn ui-corner-all" data-rel="dialog">about</a>
+                <a href="#about" class="ui-btn ui-corner-all">about</a>
             </div>
         </div>
     </div>
@@ -28,7 +27,7 @@
     </div>
 
     <div id="setting" class="ui-page-theme-b" data-role="page">
-        <div data-role="header"><h1>Setting</h1></div>
+        <div data-role="header" data-add-back-btn="true"><h1>Setting</h1></div>
         <div data-role="content">
             <div data-role="fieldcontain">
                 <div data-role="controlgroup" data-type="horizontal" data-mini="true">
@@ -46,7 +45,7 @@
                     <label for="easy">easy</label>
                     <input type="radio" name="level" id="medium" value="15"/>
                     <label for="medium">medium</label>
-                    <input type="radio" name="level" id="difficult" value="30"/>
+                    <input type="radio" name="level" id="difficult" value="25"/>
                     <label for="difficult">difficult</label>
                 </div>
             </div>
@@ -64,13 +63,25 @@
             </div>
             <div data-role="fieldcontain">
                 <label for="music">Music:</label>
-                <select name="music" id="music" data-role="slider" data-theme="b">
-                    <option value="no">No</option>
-                    <option value="yes">Yes</option>
+                <select id="music" data-role="slider" data-theme="b">
+                    <option value="0">No</option>
+                    <option value="1">Yes</option>
                 </select>
             </div>
-            <a href="#" data-rel="back" data-role="button">OK!</a>
         </div>
+    </div>
+
+    <div id="about" class="ui-page-theme-b" data-role="page">
+        <div data-role="header" data-add-back-btn="true"><h1>About</h1></div>
+        <div data-role="content" style="font-family: 微軟正黑體">
+            <h3>遊戲規則：</h3>
+            <p>　　用球盤將球打入對方的球門即可。</p>
+            <h3>好處：</h3>
+            <p>　　增加情誼、熱絡氣氛、訓練敏捷力</p>
+            <h3>作者：</h3>
+            <p>　　韓文彬</p>
+        </div>
+
     </div>
 
 </body>
@@ -80,7 +91,7 @@
     <link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" />
     <script src="js/jquery-1.11.1.min.js"></script>
     <script src="js/jquery.mobile-1.4.5.min.js"></script>
-    <script src="js/app.js" defer></script>
     <script src="js/rule.js" defer></script>
+    <script src="js/app.js" defer></script>
 </footer>
 </html>

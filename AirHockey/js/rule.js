@@ -1,60 +1,61 @@
 'use strict';
 (function(exports){
-    var model = 0;//decide 1P/2P
     var width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
     var height = (window.innerHeight > 0) ? window.innerHeight : screen.height;
     var goalStart = width * 0.3;
     var goalEnd = width * 0.7;
-    var goal = 5;
-    var ComLevel = 0;
-    var ball = {
+    var ball = {//球的相關特性
         x: width / 2,
         y: height / 2,
         r: width * 0.04,
-        dx: 0,
-        dy: 0,
-        s: 10,
-        f: 0.995
+        dx: 0,//x軸的速度
+        dy: 0,//y軸的速度
+        s: 10,//可以讓使用者調整的速度
+        f: 0.995//摩擦力
     };
-    var bumper = function (h) {
+    var bumper = function (h) {//新增球盤物件的function，傳入的h用來放置位置
         this.x = width / 2;
         this.y = height / h;
         this.r = width * 0.05;
-        this.dx = 0;
+        this.dx = 0;//用來設置Computer的移動速度
         this.dy = 0;
-        this.score = 0;
-        this.bounce = function() {
+        this.score = 0;//得分數
+        this.bounce = function() {//確認是否撞到球，有則球反彈
             if ((ball.x - this.x)*(ball.x - this.x) + (ball.y - this.y)*(ball.y - this.y)
                 <= (ball.r + this.r)*(ball.r + this.r)){
                 ball.dx = (ball.x - this.x) / (ball.r + this.r) * ball.s;//this.dx*10;
                 ball.dy = (ball.y - this.y) / (ball.r + this.r) * ball.s;//this.dy*10;
+
+                if((ball.x - this.x)*(ball.x - this.x) + (ball.y - this.y)*(ball.y - this.y)
+                    < (ball.r + this.r)*(ball.r + this.r)){
+                    this.x -= 1;
+                    this.y -= 1;
+                }
             }
         };
     };
-    var player1 = new bumper(4/3);
+    var player1 = new bumper(4/3);//新增player1，player2
     var player2 = new bumper(4);
 
-    var rule = function () {
+    var rule = function () {};
 
-    };
-
-    rule.prototype.start = function() {//set the user choice
-        this.interval = setInterval(this.drawArea.bind(this), 3);
-        model = $("[name=player]:checked").val();
+    rule.prototype.start = function() {//設置使用者的調整
         ball.f = 1 - $("#friction").val() / 1000;
         ball.s = $("#speed").val();
-        goal = $("#goal").val();
-        ComLevel = $("[name=level]:checked").val();
+        this.model = $("[name=player]:checked").val();
+        this.goal = $("#goal").val();
+        this.ComLevel = $("[name=level]:checked").val();
+        this.interval = setInterval(this.drawArea.bind(this), 3);//每3ms重刷一次畫布
     };
 
     rule.prototype.movePlayer = function(e) {
-        if(model === "1"){//1P
+        if(this.model === "1"){//1P則只能控制下半部分
             var touch = e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
             if(touch.pageY > height/2){
                 player1.x = touch.pageX;
                 player1.y = touch.pageY;
             }
-        } else {//2P
+        } else {//2P，利用迴圈將每個touch進行判斷
             for(var i = 0; i < e.originalEvent.touches.length; i++){
                 var touch = e.originalEvent.touches[i] || e.originalEvent.changedTouches[i];
                 if(touch.pageY > height/2){
@@ -68,20 +69,31 @@
         }
     };
 
+    //1P時才會call
     rule.prototype.comMove = function () {
-        //接球
-        if(Math.abs(ball.dx) + Math.abs(ball.dy) < 10 && ball.y < height / 2){
+        if(ball.y < height / 2){//球進入電腦領域時，會以y軸去撞球，球比電腦更靠近球門時，電腦移動速度會比較快
             if(ball.y > player2.y)
-                player2.y += 4;
+                player2.y += this.ComLevel/2;
             else
-                player2.y -= 4;
-        } else if (player2.y > height / 4){
-            player2.y -= 4;
+                player2.y -= this.ComLevel;
+        } else if (player2.y > height / 4){//其他狀況則維持在同一水平
+            player2.y -= this.ComLevel / 5;
         } else if (player2.y < height / 4) {
-            player2.y += 4;
+            player2.y += this.ComLevel / 5;
         }
 
-        //嚴禁超線
+        //藉由ComLevel調整電腦的左右移動速度，越困難則移動越快
+        player2.dx = this.ComLevel === 5 ? this.ComLevel : this.ComLevel / 3;
+        if(ball.y < player2.y && ball.x > player2.x - this.ComLevel && ball.x < player2.x + this.ComLevel)
+            player2.dx = this.ComLevel/3 ;
+
+        //Com移動
+        if(player2.x < ball.x + 10)
+            player2.x += player2.dx;
+        if(player2.x > ball.x - 10)
+            player2.x -= player2.dx;
+
+        //讓Computer不會超出範圍
         if(player2.y > height / 2)
             player2.y = height / 2;
         else if(player2.y < 0)
@@ -90,20 +102,9 @@
             player2.x = 0;
         else if(player2.x > width)
             player2.x = width;
-
-        player2.dx = 6;
-        //If the ball is behind Com, it moves out of the way.
-        //不知道幹嘛
-        if(ball.y < player2.y && ball.x > player2.x - 30 && ball.x < player2.x + 30)
-            player2.dx = -6;
-
-        //Com移動，ComLevel決定難度
-        if(player2.x < ball.x + ComLevel)
-            player2.x += player2.dx;
-        if(player2.x > ball.x - ComLevel)
-            player2.x -= player2.dx;
     };
 
+    //邊界，球碰到則反彈
     rule.prototype.border = function() {
         if(ball.x + ball.r >= width || ball.x - ball.r <= 0){
             ball.x = ball.x + ball.r >= width? width - ball.r : 0 + ball.r;
@@ -113,22 +114,23 @@
             if(ball.x - ball.r < goalStart || ball.x + ball.r > goalEnd){
                 ball.y = ball.y + ball.r >= height? height - ball.r : 0 + ball.r;
                 ball.dy *= -1;
-            } else if (ball.x >= goalStart && ball.x <= goalEnd){
+            } else if (ball.x >= goalStart && ball.x <= goalEnd){//進球門
                 ball.dx *= -1;
                 this.isGet();
             }
         }
     };
 
+    //進球門，得分
     rule.prototype.isGet = function() {
         if(ball.y + ball.r < 0)
             player1.score++;
         if(ball.y - ball.r > height)
             player2.score++;
-        if(player1.score == goal || player2.score == goal)
+        if(player1.score == this.goal || player2.score == this.goal)//如果到達指定分數，則遊戲結束
             this.isWin();
 
-        if(ball.y + ball.r < 0 || ball.y - ball.r > height){
+        if(ball.y + ball.r < 0 || ball.y - ball.r > height){//某方得分則初始值
             player1.x = width / 2;
             player1.y = height * 3/4;
             player2.x = width / 2;
@@ -140,15 +142,19 @@
         }
     };
 
-    rule.prototype.isWin = function() {
+    rule.prototype.isWin = function() {//獲勝則停止Interval且歸零分數，並回到主頁面
         this.drawArea();
         clearInterval(this.interval);
+        if(player1.score > player2.score)
+            alert("Player1 win!");
+        else
+            this.model === "1"? alert("Computer win!") : alert("Player2 win!");
         player1.score = 0;
         player2.score = 0;
-        this.start();
-        history.back();
+        history.back();//返回主頁面
     };
 
+    //畫布
     rule.prototype.drawArea = function() {
         var ctx = $('#canvas')[0].getContext("2d");
         ctx.canvas.width  = width;
@@ -186,13 +192,12 @@
         ball.x += ball.dx;
         ball.y += ball.dy;
 
-        if(model === "1")//1P
+        if(this.model === "1")//1P
             this.comMove();
 
         this.border();
-        player1.bounce();//bounce當球和punk接觸時才會觸發
+        player1.bounce();//確認球和球盤是否碰撞
         player2.bounce();
     };
-
     exports.rule = rule;
 })(window);
