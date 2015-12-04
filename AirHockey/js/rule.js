@@ -1,10 +1,11 @@
 'use strict';
 (function(exports){
-    var model = 0;
+    var model = 0;//decide 1P/2P
     var width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
     var height = (window.innerHeight > 0) ? window.innerHeight : screen.height;
     var goalStart = width * 0.3;
     var goalEnd = width * 0.7;
+    var goal = 5;
     var ComLevel = 0;
     var ball = {
         x: width / 2,
@@ -13,7 +14,7 @@
         dx: 0,
         dy: 0,
         s: 10,
-        f: 0
+        f: 0.995
     };
     var bumper = function (h) {
         this.x = width / 2;
@@ -34,19 +35,16 @@
     var player2 = new bumper(4);
 
     var rule = function () {
-        model = $("[name=player]:checked").val();
-        ball.f = $("[name=friction]:checked").val();
-        ComLevel = $("[name=level]:checked").val();
-        if (model === "1")
-            console.log("1");
-        if(model !== 1)
-            console.log("2");
-        if(model ===2)
-            console.log("3");
+
     };
 
-    rule.prototype.start = function() {
+    rule.prototype.start = function() {//set the user choice
         this.interval = setInterval(this.drawArea.bind(this), 3);
+        model = $("[name=player]:checked").val();
+        ball.f = 1 - $("#friction").val() / 1000;
+        ball.s = $("#speed").val();
+        goal = $("#goal").val();
+        ComLevel = $("[name=level]:checked").val();
     };
 
     rule.prototype.movePlayer = function(e) {
@@ -127,20 +125,19 @@
             player1.score++;
         if(ball.y - ball.r > height)
             player2.score++;
-        if(player1.score == 5 || player2.score == 5)
+        if(player1.score == goal || player2.score == goal)
             this.isWin();
 
         if(ball.y + ball.r < 0 || ball.y - ball.r > height){
             player1.x = width / 2;
-            player1.y = height * 0.66;
+            player1.y = height * 3/4;
             player2.x = width / 2;
-            player2.y = height * 0.33;
+            player2.y = height / 4;
             ball.x = width / 2;
             ball.y = height / 2;
             ball.dx = 0;
             ball.dy = 0;
         }
-
     };
 
     rule.prototype.isWin = function() {
@@ -148,6 +145,8 @@
         clearInterval(this.interval);
         player1.score = 0;
         player2.score = 0;
+        this.start();
+        history.back();
     };
 
     rule.prototype.drawArea = function() {

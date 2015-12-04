@@ -41,25 +41,26 @@
             </div>
             <div data-role="fieldcontain">
                 <div data-role="controlgroup" data-type="horizontal" data-mini="true">
-                    <legend>Level:</legend>
+                    <legend>Computer Level:</legend>
                     <input type="radio" name="level" id="easy" value="5" checked="checked" />
                     <label for="easy">easy</label>
-                    <input type="radio" name="level" id="medium" value="10"/>
+                    <input type="radio" name="level" id="medium" value="15"/>
                     <label for="medium">medium</label>
-                    <input type="radio" name="level" id="difficult" value="15"/>
+                    <input type="radio" name="level" id="difficult" value="30"/>
                     <label for="difficult">difficult</label>
                 </div>
             </div>
             <div data-role="fieldcontain">
-                <div data-role="controlgroup" data-type="horizontal" data-mini="true">
-                    <legend>Friction:</legend>
-                    <input type="radio" name="friction" id="no" value="1" />
-                    <label for="no">no</label>
-                    <input type="radio" name="friction" id="common" value="0.995" checked="checked"/>
-                    <label for="common">common</label>
-                    <input type="radio" name="friction" id="high" value="0.9"/>
-                    <label for="high">high</label>
-                </div>
+                <label for="goal">Goal:</label>
+                <input type="range" id="goal" value="5" min="1" max="25" data-highlight="true" />
+            </div>
+            <div data-role="fieldcontain">
+                <label for="speed">Ball Speed:</label>
+                <input type="range" id="speed" value="25" min="10" max="100" data-highlight="true" />
+            </div>
+            <div data-role="fieldcontain">
+                <label for="friction">Friction:</label>
+                <input type="range" id="friction" value="10" min="0" max="100" data-highlight="true" />
             </div>
             <div data-role="fieldcontain">
                 <label for="music">Music:</label>
@@ -79,8 +80,7 @@
     <link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" />
     <script src="js/jquery-1.11.1.min.js"></script>
     <script src="js/jquery.mobile-1.4.5.min.js"></script>
-    <script src="js/hammer.min.js"></script>
-    <script src="js/rule.js" defer></script>
     <script src="js/app.js" defer></script>
+    <script src="js/rule.js" defer></script>
 </footer>
 </html>

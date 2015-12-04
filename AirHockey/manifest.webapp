@@ -17,5 +17,7 @@
 		"description": "Needed for creating system notifications."
 	  }
   },
+  "type": "privileged",
+  "orientation": "portrait",
   "messages": [{"notification": "path/to/your/index.html"}]
 }
