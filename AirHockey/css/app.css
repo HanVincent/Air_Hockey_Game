@@ -2,7 +2,9 @@ body {
   font-size: 1rem;
   font-family: "Arial Black", "微軟正黑體";
 }
-
+img {
+  width: 100%;
+}
 canvas {
   display: block;
   width: 100%;
