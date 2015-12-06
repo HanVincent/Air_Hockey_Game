@@ -45,7 +45,7 @@
         this.model = $("[name=player]:checked").val();
         this.goal = $("#goal").val();
         this.ComLevel = $("[name=level]:checked").val();
-        this.interval = setInterval(this.drawArea.bind(this), 3);//每3ms重刷一次畫布
+        this.interval = setInterval(this.drawArea.bind(this), 1);//每3ms重刷一次畫布
     };
 
     rule.prototype.movePlayer = function(e) {
