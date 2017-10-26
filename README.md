@@ -1,6 +1,6 @@
 # Air Hockey - An Interactive Game
 ### Final project in Web Apps class
-* Native JavaScript App on Fire OS
+* Native JavaScript App on Firefox OS
 * Written in JavaScript, HTML and CSS to complete the game
 * With jQuery library
 * Available on Market of Fire OS (not developed anymore)
