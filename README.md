@@ -3,7 +3,7 @@
 * Native JavaScript App on Firefox OS
 * Written in JavaScript, HTML and CSS to complete the game
 * With jQuery library
-* Available on Market of Fire OS (not developed anymore)
+* Available on Marketplace of Firefox OS (not developed anymore)
 
 ### Features
 * 1P against AI or 2P mode
