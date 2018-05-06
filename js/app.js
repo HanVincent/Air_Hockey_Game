@@ -6,8 +6,7 @@ $("#start").click(e => {
   rule.reset();
   rule.set();
 
-  $("#canvas").on("touchstart touchmove mousemove" ,e => {
-    e.preventDefault();
+  $("#canvas").on("mousemove", e => {
     rule.movePlayer(e);
   });
 
