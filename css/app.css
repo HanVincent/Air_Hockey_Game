@@ -12,12 +12,9 @@ h1 {
 img {
   width: 100%;
 }
-#footer{
-  bottom: 0px;
-}
 #canvas {
   display: block;
-  margin: 10px auto;
+  margin: 0px auto;
   background: url(images/back.png);
   background-size: cover;
 }

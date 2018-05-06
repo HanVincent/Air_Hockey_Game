@@ -1,19 +1,39 @@
 "use strict";
 
 function Rule() {
+  this.player1 = new Bumper(4 / 3);
+  this.player2 = new Bumper(4);
+}
+
+Rule.prototype.set = function() {
   BALL.f = 1 - $("#friction").val() / 1000;
   BALL.s = $("#speed").val() / 5;
   this.mode = $("[name=player]:checked").val();
   this.goal = $("#goal").val();
   this.comLevel = $("[name=level]:checked").val();
-  this.player1 = new Bumper(4 / 3);
-  this.player2 = new Bumper(4);
-  this.interval = setInterval(this.drawArea.bind(this), 2); //每3ms重刷一次畫布
-}
+
+  this.interval = setInterval(this.drawArea.bind(this), 1); //每3ms重刷一次畫布
+};
+
+Rule.prototype.init = function() {
+  this.player1.x = WIDTH / 2;
+  this.player1.y = HEIGHT * 3 / 4;
+  this.player2.x = WIDTH / 2;
+  this.player2.y = HEIGHT / 4;
+  BALL.x = WIDTH / 2;
+  BALL.y = HEIGHT / 2;
+  BALL.dx = 0;
+  BALL.dy = 0;
+};
+
+Rule.prototype.reset = function() {
+  this.init();
+  clearInterval(this.interval);
+};
 
 Rule.prototype.movePlayer = function(e) {
   if (this.mode === "1") {
-    // 1P則只能控制下半部分
+    // 1P 則只能控制下半部分
     const x = e.offsetX;
     const y = e.offsetY;
     if (y > HEIGHT / 2) {
@@ -21,12 +41,12 @@ Rule.prototype.movePlayer = function(e) {
       this.player1.y = y;
     }
   } else {
-    // TODO:?
+    // TODO: Should be usable on mobile
     //2P，利用迴圈將每個touch進行判斷
     for (var i = 0; i < e.originalEvent.touches.length; i++) {
       var touch =
         e.originalEvent.touches[i] || e.originalEvent.changedTouches[i];
-      if (touch.pageY > height / 2) {
+      if (touch.pageY > HEIGHT / 2) {
         this.player1.x = touch.pageX;
         this.player1.y = touch.pageY;
       } else {
@@ -64,13 +84,12 @@ Rule.prototype.comMove = function() {
   if (this.player2.x > BALL.x - 10) this.player2.x -= this.player2.dx;
 
   // 讓 computer 不會超出範圍
-  // TODO 改成 function
   this.player2.y = Math.max(0, Math.min(HEIGHT / 2, this.player2.y));
   this.player2.x = Math.max(0, Math.min(WIDTH, this.player2.x));
 };
 
 // 邊界，球碰到則反彈
-Rule.prototype.border = function() {
+Rule.prototype.getBorder = function() {
   if (BALL.x + BALL.r >= WIDTH || BALL.x - BALL.r <= 0) {
     BALL.x = BALL.x + BALL.r >= WIDTH ? WIDTH - BALL.r : 0 + BALL.r;
     BALL.dx *= -1;
@@ -89,32 +108,22 @@ Rule.prototype.border = function() {
 
 // 進球門，得分
 Rule.prototype.getScore = function() {
-
   if (BALL.y + BALL.r < 0) this.player1.score++;
   else if (BALL.y - BALL.r > HEIGHT) this.player2.score++;
-  
-  if (this.player1.score == this.goal || this.player2.score == this.goal)
-    // 如果到達指定分數，則遊戲結束
-    this.isOver();
 
-    // TODO: 應該不用判斷？
+  if (this.player1.score == this.goal || this.player2.score == this.goal)
+    this.isOver(); // 如果到達指定分數，則遊戲結束
+
+  // WHY? 沒有這個條件數字就不會上升
   if (BALL.y + BALL.r < 0 || BALL.y - BALL.r > HEIGHT) {
-    // 某方得分則初始值
-    this.player1.x = WIDTH / 2;
-    this.player1.y = HEIGHT * 3 / 4;
-    this.player2.x = WIDTH / 2;
-    this.player2.y = HEIGHT / 4;
-    BALL.x = WIDTH / 2;
-    BALL.y = HEIGHT / 2;
-    BALL.dx = 0;
-    BALL.dy = 0;
+    this.init();
   }
 };
 
 Rule.prototype.isOver = function() {
   // 獲勝則停止Interval且歸零分數，並回到主頁面
   this.drawArea();
-  clearInterval(this.interval);
+  this.reset();
   if (this.player1.score > this.player2.score) alert("player1 win!");
   else this.mode === "1" ? alert("Computer win!") : alert("player2 win!");
   this.player1.score = 0;
@@ -161,10 +170,10 @@ Rule.prototype.drawArea = function() {
   BALL.y += BALL.dy;
 
   if (this.mode === "1")
-    //1P
+    // 1P
     this.comMove();
 
-  this.border();
+  this.getBorder();
   this.player1.bounce(); // 確認球和球盤是否碰撞
   this.player2.bounce();
 };

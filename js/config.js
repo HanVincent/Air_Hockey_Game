@@ -1,7 +1,5 @@
-// var width = (window.innerWidth > 0) ? window.innerWidth : screen.width;
-const WIDTH = 320;
-// (window.innerHeight > 0) ? window.innerHeight : screen.height;
-const HEIGHT = 540; 
+const WIDTH = (window.innerWidth > window.innerHeight / (540/320)) ? window.innerHeight/(540/320) : window.innerWidth;
+const HEIGHT = window.innerHeight;
 const GATE_LEFT = WIDTH * 0.3;
 const GATE_RIGHT = WIDTH * 0.7;
 const BALL = {
