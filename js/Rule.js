@@ -12,7 +12,7 @@ Rule.prototype.set = function() {
   this.goal = $("#goal").val();
   this.comLevel = $("[name=level]:checked").val();
 
-  this.interval = setInterval(this.drawArea.bind(this), 1); //每3ms重刷一次畫布
+  this.interval = setInterval(this.drawArea.bind(this), 5); 
 };
 
 Rule.prototype.init = function() {
