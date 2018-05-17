@@ -3,7 +3,7 @@ let rule = new Rule();
 
 $("#start").click(e => {
   // 開始遊戲之後
-  rule.reset();
+  rule.init();
   rule.set();
 
   $("#canvas").on("mousemove", e => {

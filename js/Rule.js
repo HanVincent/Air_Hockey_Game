@@ -1,5 +1,18 @@
 "use strict";
 
+(function() {
+  const requestAnimationFrame =
+    window.requestAnimationFrame ||
+    window.mozRequestAnimationFrame ||
+    window.webkitRequestAnimationFrame ||
+    window.msRequestAnimationFrame;
+  window.requestAnimationFrame = requestAnimationFrame;
+})();
+
+const ctx = $("#canvas")[0].getContext("2d");
+ctx.canvas.width = WIDTH;
+ctx.canvas.height = HEIGHT;
+
 function Rule() {
   this.player1 = new Player(4 / 3);
   this.player2 = new Player(4);
@@ -7,12 +20,18 @@ function Rule() {
 
 Rule.prototype.set = function() {
   BALL.f = 1 - $("#friction").val() / 1000;
-  BALL.s = $("#speed").val() / 5;
+  BALL.s = $("#speed").val() /2 ;
+
   this.mode = $("[name=player]:checked").val();
   this.goal = $("#goal").val();
   this.comLevel = $("[name=level]:checked").val();
 
-  this.interval = setInterval(this.drawArea.bind(this), 5); 
+  const self = this;
+  function step(timestamp) {
+    self.drawArea();
+    requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
 };
 
 Rule.prototype.init = function() {
@@ -24,11 +43,6 @@ Rule.prototype.init = function() {
   BALL.y = HEIGHT / 2;
   BALL.dx = 0;
   BALL.dy = 0;
-};
-
-Rule.prototype.reset = function() {
-  this.init();
-  clearInterval(this.interval);
 };
 
 // 2P players on phone
@@ -75,11 +89,11 @@ Rule.prototype.comMove = function() {
     BALL.x > this.player2.x - this.comLevel &&
     BALL.x < this.player2.x + this.comLevel
   )
-    this.player2.dx = this.comLevel / 3;
+    this.player2.dx = this.comLevel / 5;
 
   // Com移動
-  if (this.player2.x < BALL.x + 10) this.player2.x += this.player2.dx;
-  if (this.player2.x > BALL.x - 10) this.player2.x -= this.player2.dx;
+  if (this.player2.x < BALL.x + this.player2.r) this.player2.x += this.player2.dx;
+  if (this.player2.x > BALL.x - this.player2.r) this.player2.x -= this.player2.dx;
 
   // 讓 computer 不會超出範圍
   this.player2.y = Math.max(0, Math.min(HEIGHT / 2, this.player2.y));
@@ -121,7 +135,7 @@ Rule.prototype.getScore = function() {
 Rule.prototype.isOver = function() {
   // 獲勝則停止Interval且歸零分數，並回到主頁面
   this.drawArea();
-  this.reset();
+  this.init();
   if (this.player1.score > this.player2.score) alert("player1 win!");
   else this.mode === "1" ? alert("Computer win!") : alert("player2 win!");
   this.player1.score = 0;
@@ -129,12 +143,8 @@ Rule.prototype.isOver = function() {
   history.back(); // 返回主頁面
 };
 
-//畫布
 Rule.prototype.drawArea = function() {
-  let ctx = $("#canvas")[0].getContext("2d");
-  ctx.canvas.width = WIDTH;
-  ctx.canvas.height = HEIGHT;
-
+  ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
   //BALL
   ctx.beginPath();
   ctx.arc(BALL.x, BALL.y, BALL.r, 0, Math.PI * 2, true);
@@ -167,8 +177,7 @@ Rule.prototype.drawArea = function() {
   BALL.x += BALL.dx;
   BALL.y += BALL.dy;
 
-  if (this.mode === "1")
-    // 1P
+  if (this.mode === "1") // 1P
     this.comMove();
 
   this.getBorder();
