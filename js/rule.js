@@ -1,8 +1,8 @@
 "use strict";
 
 function Rule() {
-  this.player1 = new Bumper(4 / 3);
-  this.player2 = new Bumper(4);
+  this.player1 = new Player(4 / 3);
+  this.player2 = new Player(4);
 }
 
 Rule.prototype.set = function() {
@@ -31,29 +31,27 @@ Rule.prototype.reset = function() {
   clearInterval(this.interval);
 };
 
+// 2P players on phone
+Rule.prototype.multiPlayers = function(e) {
+  for (let i = 0; i < e.originalEvent.touches.length; i++) {
+    const touch =
+      e.originalEvent.touches[i] || e.originalEvent.changedTouches[i];
+    if (touch.pageY > HEIGHT / 2) {
+      this.player1.x = touch.pageX;
+      this.player1.y = touch.pageY;
+    } else if (this.mode === "2") {
+      this.player2.x = touch.pageX;
+      this.player2.y = touch.pageY;
+    }
+  }
+};
+
+// on PC web, only can control below parts
 Rule.prototype.movePlayer = function(e) {
-  if (this.mode === "1") {
-    // 1P 則只能控制下半部分
-    const x = e.offsetX;
-    const y = e.offsetY;
-    if (y > HEIGHT / 2) {
-      this.player1.x = x;
-      this.player1.y = y;
-    }
-  } else {
-    // TODO: Should be usable on mobile
-    //2P，利用迴圈將每個touch進行判斷
-    for (var i = 0; i < e.originalEvent.touches.length; i++) {
-      var touch =
-        e.originalEvent.touches[i] || e.originalEvent.changedTouches[i];
-      if (touch.pageY > HEIGHT / 2) {
-        this.player1.x = touch.pageX;
-        this.player1.y = touch.pageY;
-      } else {
-        this.player2.x = touch.pageX;
-        this.player2.y = touch.pageY;
-      }
-    }
+  const [x, y] = [e.offsetX, e.offsetY];
+  if (y > HEIGHT / 2) {
+    this.player1.x = x;
+    this.player1.y = y;
   }
 };
 

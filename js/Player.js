@@ -1,5 +1,5 @@
 // 新增球盤物件的function，傳入的h用來放置位置
-function Bumper(h) {
+function Player(h) {
   this.x = WIDTH / 2;
   this.y = HEIGHT / h;
   this.r = WIDTH * 0.05;
@@ -8,7 +8,7 @@ function Bumper(h) {
   this.score = 0; //得分數
 }
 
-Bumper.prototype.bounce = function() {
+Player.prototype.bounce = function() {
   //確認是否撞到球，有則球反彈
   if (
     Math.pow(BALL.x - this.x, 2) + Math.pow(BALL.y - this.y, 2) <=

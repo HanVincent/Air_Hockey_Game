@@ -10,6 +10,10 @@ $("#start").click(e => {
     rule.movePlayer(e);
   });
 
+  $("#canvas").on("touchmove", e => {
+    rule.multiPlayers(e);
+  });
+  
   if ($("#music").val() === "1") {
     // 撥放音樂
     audioElement.setAttribute("src", "Butchers.mp3");
