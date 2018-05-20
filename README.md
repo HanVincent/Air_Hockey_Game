@@ -1,9 +1,8 @@
 # Air Hockey - An Interactive Game
 
 Originally, it was built for Firefox OS. 
-Due to Firefox OS shutdown, I modified the web app into web-based game.
-However, it sill CAN work on smartphone, not only 1 player but also 2 players!
-But 2 players mode is not workable on Computers.
+Due to shutdown of Firefox OS, I modified this project into web-based game.
+However, it still CAN work on smartphones in 1P mode as well as 2P modd, but 2P mode is not available on computers.
 
 ### Final project in Web Apps class
 * ~~Native JavaScript App on Firefox OS~~
