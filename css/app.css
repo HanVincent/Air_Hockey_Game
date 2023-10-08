@@ -15,6 +15,6 @@ img {
 #canvas {
   display: block;
   margin: 0px auto;
-  background: url(images/back.png);
-  background-size: cover;
+  border-left: 1px solid orangered;
+  border-right: 1px solid orangered;
 }
