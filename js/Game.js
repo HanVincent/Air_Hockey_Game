@@ -1,12 +1,14 @@
 class Game {
-  #board; #ball; #player1; #player2; #ctx; #is1PMode; #goal;
-  constructor(board, ball, player1, player2, mode, goal, ctx) {
+  #board; #ball; #player1; #player2; #ctx; #is1PMode; #goal; #audioElement; #musicEnabled;
+  constructor(board, ball, player1, player2, mode, goal, ctx, musicEnabled) {
     this.#board = board;
     this.#ball = ball;
     this.#player1 = player1;
     this.#player2 = player2;
     this.#is1PMode = mode === "1";
     this.#goal = goal;
+    this.#musicEnabled = musicEnabled;
+    this.#audioElement = document.createElement("audio");
     this.#ctx = ctx;
     this.#ctx.canvas.height = this.#board.height;
     this.#ctx.canvas.width = this.#board.width;
@@ -26,7 +28,16 @@ class Game {
         requestAnimationFrame(step);
       }
     }
+    this.playMusic();
     requestAnimationFrame(step);
+  }
+
+  playMusic() {
+    if (this.#musicEnabled) {
+      this.#audioElement.setAttribute("src", "Butchers.mp3");
+      this.#audioElement.setAttribute("autoplay", "autoplay");
+      this.#audioElement.addEventListener("load", this.#audioElement.play);
+    }
   }
 
   // 1P mode on PC web
@@ -54,7 +65,7 @@ class Game {
     // handle ball's y-axis
     if (this.#ball.y < this.#board.height * 0.5) {
       // When ball enters computer's field, computer moves according to the y-axis of ball, and computer speeds up when the ball exceeds the computer
-      const directionAndSpeed = this.#ball.y - this.#ball.r > this.#player2.y +this.#player2.r ? 0.5 : -1;
+      const directionAndSpeed = this.#ball.y - this.#ball.r > this.#player2.y + this.#player2.r ? 0.5 : -1;
       this.#player2.updateLoc(this.#player2.x, this.#player2.y + this.#player2.dy * directionAndSpeed);
     } else {
       // When ball is in player's field, computer gets back to stand-by
@@ -149,6 +160,7 @@ class Game {
     } else {
       alert(this.#board.is1PMode ? "Computer win!" : "player2 win!");
     }
+    this.#audioElement.pause();
     // back to homepage
     history.back();
   }

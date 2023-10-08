@@ -22,9 +22,8 @@ $("#start").click(e => {
   const ctx = $("#canvas")[0].getContext("2d");
   const mode = $("[name=player]:checked").val();
   const goal = $("#goal").val()
-  const game = new Game(board, ball, player1, player2, mode, goal, ctx);
-  const audioElement = document.createElement("audio");
-  playMusic(audioElement);
+  const musicEnabled = $("#music").val() === "1";
+  const game = new Game(board, ball, player1, player2, mode, goal, ctx, musicEnabled);
 
   $("#canvas").on("mousemove", e => {
     game.movePlayer(e);
@@ -36,19 +35,3 @@ $("#start").click(e => {
 
   game.start();
 });
-
-function playMusic(audioElement) {
-  if ($("#music").val() === "1") {
-    audioElement.setAttribute("src", "Butchers.mp3");
-    audioElement.setAttribute("autoplay", "autoplay");
-    audioElement.addEventListener(
-      "load",
-      () => {
-        audioElement.play();
-      },
-      true
-    );
-  } else {
-    audioElement.pause();
-  }
-}
