@@ -15,7 +15,6 @@
 
 // start game
 $("#start").click(e => {
-  // TODO: everytime click start, will create objects
   const board = new Board(window.innerHeight, window.innerWidth);
   const ball = new Ball(board.height, board.width, 0, 0, $("#speed").val() / 2, 1 - $("#friction").val() / 1000);
   const player1 = new Player(board.height, board.width, 0.75);

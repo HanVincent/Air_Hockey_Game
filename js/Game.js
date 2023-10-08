@@ -22,7 +22,9 @@ class Game {
       this.hitBall(this.#player1);
       this.hitBall(this.#player2);
       this.drawArea();
-      requestAnimationFrame(step);
+      if (!this.isGameOver()) {
+        requestAnimationFrame(step);
+      }
     }
     requestAnimationFrame(step);
   }
@@ -52,7 +54,7 @@ class Game {
     // handle ball's y-axis
     if (this.#ball.y < this.#board.height * 0.5) {
       // When ball enters computer's field, computer moves according to the y-axis of ball, and computer speeds up when the ball exceeds the computer
-      const directionAndSpeed = this.#ball.y > this.#player2.y ? 0.5 : -1;
+      const directionAndSpeed = this.#ball.y - this.#ball.r > this.#player2.y +this.#player2.r ? 0.5 : -1;
       this.#player2.updateLoc(this.#player2.x, this.#player2.y + this.#player2.dy * directionAndSpeed);
     } else {
       // When ball is in player's field, computer gets back to stand-by
@@ -96,7 +98,7 @@ class Game {
 
     // check y-axis
     if (this.#ball.y + this.#ball.r >= this.#board.height || this.#ball.y - this.#ball.r <= 0) {
-      if (this.#ball.x - this.#ball.r < this.#board.gateLeft || this.#ball.x + this.#ball.r > this.#board.gateRight) {
+      if (this.#ball.x < this.#board.gateLeft || this.#ball.x > this.#board.gateRight) {
         this.#ball.updateLoc(
           this.#ball.x,
           (this.#ball.y + this.#ball.r >= this.#board.height) ? (this.#board.height - this.#ball.r) : (0 + this.#ball.r)
@@ -116,6 +118,7 @@ class Game {
         (this.#ball.x - player.x) / (this.#ball.r + player.r),
         (this.#ball.y - player.y) / (this.#ball.r + player.r)
       );
+      player.updateLoc(player.x - 1, player.y - 1);
     }
   }
 
@@ -131,12 +134,16 @@ class Game {
       this.#ball.init();
     }
 
-    if (this.#player1.score == this.#goal || this.#player2.score == this.#goal) {
-      this.gameOver();
+    if (this.isGameOver()) {
+      this.terminate();
     }
   }
 
-  gameOver() {
+  isGameOver() {
+    return this.#player1.score == this.#goal || this.#player2.score == this.#goal;
+  }
+
+  terminate() {
     if (this.#player1.score > this.#player2.score) {
       alert("player1 win!");
     } else {
